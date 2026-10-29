@@ -1,0 +1,33 @@
+{
+  "features": [
+    "vehicle_type_encoded",
+    "distance_km",
+    "hour",
+    "day_of_week",
+    "traffic_factor",
+    "is_raining"
+  ],
+  "target": "duration_min / physics_eta (prediction = model output x mobility_model.expected_duration_minutes)",
+  "vehicle_encoding": {
+    "bike": 0,
+    "auto": 1,
+    "cab": 2
+  },
+  "mae_minutes": 2.995,
+  "physics_only_mae_minutes": 2.99,
+  "mae_minutes_by_vehicle": {
+    "bike": 1.875,
+    "auto": 2.767,
+    "cab": 4.383
+  },
+  "r2_score": 0.9573,
+  "feature_importance": {
+    "vehicle_type_encoded": 0.0378,
+    "distance_km": 0.4157,
+    "hour": 0.1006,
+    "day_of_week": 0.0949,
+    "traffic_factor": 0.3372,
+    "is_raining": 0.0138
+  },
+  "training_rows": 247951
+}

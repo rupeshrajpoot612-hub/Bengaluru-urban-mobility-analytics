@@ -1,0 +1,15 @@
+Open PowerShell in C:\all\3 sem\bda\a2 and run:
+
+1) (First time only) install the libraries:
+pip install -r requirements.txt
+
+2) (Optional) regenerate data, MapReduce outputs and models (~10 seconds):
+python pipeline\run_all.py
+
+3) Start the dashboard:
+python backend\app.py
+
+Then open
+http://127.0.0.1:5000
+Use the User / Driver / Admin buttons at the top (or open #user, #driver, #admin directly).
+Stop the server with Ctrl+C.

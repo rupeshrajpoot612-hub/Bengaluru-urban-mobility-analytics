@@ -1,0 +1,31 @@
+pickup_zone,vehicle_type,trip_count,avg_duration_min,avg_fare_inr,total_fare_inr
+Electronic City,auto,8031,30.77,211.94,1702068
+Electronic City,bike,7237,19.78,90.47,654713
+Electronic City,cab,8454,49.20,498.82,4216994
+HSR Layout,auto,9051,24.27,167.02,1511695
+HSR Layout,bike,8853,17.18,79.13,700575
+HSR Layout,cab,7048,32.61,324.09,2284163
+Hebbal,auto,6761,28.53,191.98,1298010
+Hebbal,bike,6204,18.89,84.36,523400
+Hebbal,cab,6456,42.86,430.06,2776448
+Indiranagar,auto,11584,23.70,168.84,1955897
+Indiranagar,bike,10846,17.07,80.75,875826
+Indiranagar,cab,8641,31.17,319.37,2759660
+Jayanagar,auto,7603,22.59,150.72,1145903
+Jayanagar,bike,7409,16.36,72.52,537269
+Jayanagar,cab,5602,31.72,308.74,1729539
+Kempegowda Airport (BLR),auto,2538,14.22,95.17,241548
+Kempegowda Airport (BLR),bike,2850,9.51,42.37,120763
+Kempegowda Airport (BLR),cab,9298,49.16,541.49,5034755
+Koramangala,auto,13069,21.31,151.87,1984788
+Koramangala,bike,12738,15.19,72.37,921833
+Koramangala,cab,8976,28.24,289.07,2594651
+MG Road,auto,10465,21.43,149.89,1568646
+MG Road,bike,10113,15.51,72.37,731873
+MG Road,cab,7341,28.75,291.42,2139344
+Majestic (KSR Station),auto,8321,23.89,166.37,1384349
+Majestic (KSR Station),bike,8076,17.20,79.12,639004
+Majestic (KSR Station),cab,6637,32.80,332.36,2205879
+Whitefield,auto,8639,32.57,229.05,1978766
+Whitefield,bike,7932,18.70,87.46,693709
+Whitefield,cab,11178,57.88,601.22,6720421

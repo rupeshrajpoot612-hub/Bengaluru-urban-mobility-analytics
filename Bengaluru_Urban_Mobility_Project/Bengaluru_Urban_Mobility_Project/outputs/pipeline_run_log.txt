@@ -1,0 +1,193 @@
+
+######################################################################
+# RUNNING 00_generate_bengaluru_data.py
+######################################################################
+======================================================================
+STAGE 0: GENERATE SYNTHETIC BENGALURU MULTI-MODAL TRIPS
+======================================================================
+Days simulated: 181 (2025-01-01 .. 2025-06-30), rainy days: 25
+Raw rows written: 250,750 (incl. injected dirty/duplicate rows)
+Mode shares: {'auto': 0.347, 'bike': 0.331, 'cab': 0.322}
+Saved: C:\all\3 sem\bda\a2\outputs\bengaluru_mobility_raw.csv
+
+Stage 0 completed in 1.2s
+
+######################################################################
+# RUNNING 01_clean_and_engineer.py
+######################################################################
+======================================================================
+STAGE 1: DATA CLEANING & FEATURE ENGINEERING
+======================================================================
+Loaded raw data: 250,750 rows, 11 columns
+Duplicates removed: 750
+Vehicle names normalised (case/whitespace); unknown types removed: 0
+Rows with missing/unknown zones removed: 600
+Invalid datetime rows removed: 0
+Zero/negative distance rows removed: 600
+Durations inconsistent with timestamps removed: 600
+Missing fares imputed from rate card: 600
+Extreme outlier rows removed (>99.9th pct duration, 185 min): 249
+
+Final cleaned dataset: 247,951 rows, 30 columns
+Saved: C:\all\3 sem\bda\a2\outputs\cleaned_bengaluru_mobility.csv
+Saved MapReduce input: C:\all\3 sem\bda\a2\outputs\mapreduce_input.tsv
+
+Stage 1 completed in 3.2s
+
+######################################################################
+# RUNNING 02_run_mapreduce.py
+######################################################################
+======================================================================
+STAGE 2: MAPREDUCE EXECUTION (4 jobs)
+======================================================================
+
+======================================================================
+MAPREDUCE job1_modal_demand_by_hour
+======================================================================
+  [1/3] MAP phase ...
+        mapped records: 247,951  (0.2s)
+  [2/3] SHUFFLE / SORT phase ...
+        sorted in 0.1s
+  [3/3] REDUCE phase ...
+        reduced groups: 72  (0.1s)
+  Saved: C:\all\3 sem\bda\a2\outputs\mapreduce\job1_modal_demand_by_hour.csv  (72 rows, total 0.3s)
+
+======================================================================
+MAPREDUCE job2_avg_duration_and_fare_by_zone
+======================================================================
+  [1/3] MAP phase ...
+        mapped records: 247,951  (0.3s)
+  [2/3] SHUFFLE / SORT phase ...
+        sorted in 0.1s
+  [3/3] REDUCE phase ...
+        reduced groups: 30  (0.1s)
+  Saved: C:\all\3 sem\bda\a2\outputs\mapreduce\job2_avg_duration_and_fare_by_zone.csv  (30 rows, total 0.5s)
+
+======================================================================
+MAPREDUCE job3_top_congestion_corridors
+======================================================================
+  [1/3] MAP phase ...
+        mapped records: 64,762  (0.1s)
+  [2/3] SHUFFLE / SORT phase ...
+        sorted in 0.0s
+  [3/3] REDUCE phase ...
+        reduced groups: 90  (0.1s)
+  Saved: C:\all\3 sem\bda\a2\outputs\mapreduce\job3_top_congestion_corridors.csv  (90 rows, total 0.2s)
+
+======================================================================
+MAPREDUCE job4_demand_dataset
+======================================================================
+  [1/3] MAP phase ...
+        mapped records: 247,951  (0.3s)
+  [2/3] SHUFFLE / SORT phase ...
+        sorted in 0.1s
+  [3/3] REDUCE phase ...
+        reduced groups: 38,158  (0.1s)
+  Saved: C:\all\3 sem\bda\a2\outputs\mapreduce\job4_demand_dataset.csv  (38,158 rows, total 0.5s)
+
+All MapReduce jobs completed in 1.5s
+
+######################################################################
+# RUNNING 03_train_models.py
+######################################################################
+======================================================================
+MODEL A: TRIP DURATION PREDICTION (Regression, all 3 vehicle types)
+======================================================================
+Training rows: 247,951
+Trained in 1.1s
+MAE: 2.99 min   R2: 0.9573   (physics formula alone: MAE 2.99 min)
+MAE by vehicle: {'bike': 1.875, 'auto': 2.767, 'cab': 4.383}
+
+======================================================================
+MODEL B: ZONE DEMAND LEVEL / SURGE PREDICTION (Classification)
+======================================================================
+Demand cells (from MapReduce Job 4): 38,158
+Demand level distribution:
+demand_level
+Low       15442
+Medium    12220
+High      10496
+Name: count, dtype: int64
+Trained in 0.1s
+Accuracy: 0.6803   Weighted F1: 0.6873
+
+======================================================================
+STAGE 3 COMPLETE
+======================================================================
+{
+  "duration_model": {
+    "features": [
+      "vehicle_type_encoded",
+      "distance_km",
+      "hour",
+      "day_of_week",
+      "traffic_factor",
+      "is_raining"
+    ],
+    "target": "duration_min / physics_eta (prediction = model output x mobility_model.expected_duration_minutes)",
+    "vehicle_encoding": {
+      "bike": 0,
+      "auto": 1,
+      "cab": 2
+    },
+    "mae_minutes": 2.995,
+    "physics_only_mae_minutes": 2.99,
+    "mae_minutes_by_vehicle": {
+      "bike": 1.875,
+      "auto": 2.767,
+      "cab": 4.383
+    },
+    "r2_score": 0.9573,
+    "feature_importance": {
+      "vehicle_type_encoded": 0.0378,
+      "distance_km": 0.4157,
+      "hour": 0.1006,
+      "day_of_week": 0.0949,
+      "traffic_factor": 0.3372,
+      "is_raining": 0.0138
+    },
+    "training_rows": 247951
+  },
+  "demand_model": {
+    "features": [
+      "hour",
+      "day_of_week",
+      "is_weekend",
+      "is_peak_hour",
+      "zone_code",
+      "is_raining"
+    ],
+    "zone_encoding": {
+      "Indiranagar": 0,
+      "Koramangala": 1,
+      "Whitefield": 2,
+      "HSR Layout": 3,
+      "Electronic City": 4,
+      "MG Road": 5,
+      "Hebbal": 6,
+      "Kempegowda Airport (BLR)": 7,
+      "Majestic (KSR Station)": 8,
+      "Jayanagar": 9
+    },
+    "accuracy": 0.6803,
+    "f1_weighted": 0.6873,
+    "thresholds": {
+      "q33": 4.0,
+      "q66": 8.0
+    },
+    "class_counts": {
+      "Low": 15442,
+      "Medium": 12220,
+      "High": 10496
+    },
+    "training_rows": 38158
+  }
+}
+
+######################################################################
+# RUNNING 04_precompute_dashboard.py
+######################################################################
+Loaded cleaned dataset: 247,951 rows
+Saved: C:\all\3 sem\bda\a2\outputs\dashboard_data.json (64 KB)
+
+FULL PIPELINE COMPLETE in 10.0s

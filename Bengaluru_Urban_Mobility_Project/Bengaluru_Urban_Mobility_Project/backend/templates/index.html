@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bengaluru Urban Mobility</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+</head>
+<body>
+
+<header class="app-header">
+  <div class="header-inner">
+    <div class="brand-row">
+      <div>
+        <h1>Bengaluru Urban Mobility &amp; Transit Analytics</h1>
+        <p class="subtitle">Multi-modal (Bike · Auto · Cab) trips · MapReduce aggregation · ML-based ETA, fare &amp; surge prediction</p>
+      </div>
+      <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Switch colour theme">Theme: Auto</button>
+    </div>
+    <nav class="role-switcher" role="tablist" aria-label="Dashboard role">
+      <button class="role-btn" role="tab" data-role="user" aria-selected="true">User View</button>
+      <button class="role-btn" role="tab" data-role="driver" aria-selected="false">Driver View</button>
+      <button class="role-btn" role="tab" data-role="admin" aria-selected="false">Admin View</button>
+    </nav>
+  </div>
+</header>
+
+<main id="app">
+  <section id="status-banner" class="banner hidden"></section>
+
+  <!-- ================================================================ USER -->
+  <section id="view-user" class="view active" role="tabpanel" aria-label="User view">
+    <p class="view-intro">Plan a trip across Bengaluru: pick your hubs and time, and compare Bike, Auto and Cab on
+      ETA (adjusted for peak-hour traffic) and fare (rate card + surge).</p>
+
+    <article class="card wide">
+      <h2>Trip planner</h2>
+      <p class="chart-note" id="trip-model-note"></p>
+      <form id="form-trip">
+        <div class="form-grid">
+          <label class="field">Pickup
+            <select name="pickup_zone" id="trip-pickup" class="zone-select" required></select>
+          </label>
+          <label class="field">Drop-off
+            <select name="dropoff_zone" id="trip-dropoff" class="zone-select" required></select>
+          </label>
+          <label class="field">Travel time
+            <input type="time" name="time" id="trip-time" value="09:30" required>
+          </label>
+          <label class="field">Day
+            <select name="day_of_week" id="trip-day" class="day-select"></select>
+          </label>
+          <label class="field">Distance (km, optional)
+            <input type="number" name="distance_km" step="0.1" min="0.3" max="80" placeholder="auto from hubs">
+          </label>
+          <label class="check"><input type="checkbox" name="is_raining" value="1"> Raining</label>
+        </div>
+        <div class="controls-row" style="margin-top:14px; margin-bottom:0">
+          <button type="submit" class="btn-primary">Compare rides</button>
+          <button type="button" class="btn-ghost" id="trip-swap">Swap pickup ⇄ drop</button>
+        </div>
+      </form>
+      <div id="trip-result" class="hidden">
+        <div class="trip-context" id="trip-context"></div>
+        <div class="compare-grid" id="trip-compare"></div>
+      </div>
+    </article>
+
+    <div class="grid" style="margin-top:16px">
+      <article class="card">
+        <h2>Nearest hotspots</h2>
+        <p class="chart-note" id="hotspot-note">Busy hubs near your pickup at the chosen hour — easier to find a ride.</p>
+        <ul class="rank-list" id="hotspot-list"></ul>
+      </article>
+      <article class="card">
+        <h2>Surge by time of day</h2>
+        <p class="chart-note">Average surge multiplier across all trips</p>
+        <div class="chart-box"><canvas id="chart-user-surge"></canvas></div>
+      </article>
+      <article class="card">
+        <h2>Best time to travel</h2>
+        <p class="chart-note">Average minutes per km by hour, per vehicle — lower is faster</p>
+        <div class="chart-box"><canvas id="chart-user-minkm"></canvas></div>
+      </article>
+      <article class="card">
+        <h2>Typical fare &amp; time by trip length</h2>
+        <p class="chart-note">Short &lt; 3 km · Medium 3-8 · Long 8-15 · Very Long 15+</p>
+        <div class="table-scroll" id="table-user-estimates"></div>
+      </article>
+    </div>
+  </section>
+
+  <!-- ============================================================== DRIVER -->
+  <section id="view-driver" class="view" role="tabpanel" aria-label="Driver view">
+    <p class="view-intro">Where demand is, when it pays best, and which corridors earn the most per minute of driving.</p>
+
+    <div class="controls-row">
+      <label class="field">My vehicle
+        <select id="driver-vehicle"></select>
+      </label>
+      <label class="field">Hour
+        <select id="driver-hour"></select>
+      </label>
+    </div>
+
+    <section class="kpi-grid" id="kpi-driver" aria-label="Driver metrics"></section>
+
+    <div class="grid">
+      <article class="card">
+        <h2>Where to position yourself now</h2>
+        <p class="chart-note" id="position-note"></p>
+        <ul class="rank-list" id="position-list"></ul>
+      </article>
+      <article class="card">
+        <h2>Check demand &amp; surge for a zone</h2>
+        <p class="chart-note" id="demand-model-note"></p>
+        <form id="form-demand">
+          <div class="form-grid">
+            <label class="field">Zone <select name="pickup_zone" class="zone-select" required></select></label>
+            <label class="field">Hour <input type="number" name="hour" min="0" max="23" value="19" required></label>
+            <label class="field">Day <select name="day_of_week" class="day-select"></select></label>
+            <label class="check"><input type="checkbox" name="is_raining" value="1"> Raining</label>
+          </div>
+          <div class="controls-row" style="margin-top:14px; margin-bottom:0">
+            <button type="submit" class="btn-primary">Predict demand</button>
+          </div>
+        </form>
+        <div class="predict-result hidden" id="result-demand"></div>
+      </article>
+
+      <article class="card wide">
+        <h2>Hotspot heatmap — average trips per hour by pickup zone</h2>
+        <p class="chart-note">Source: MapReduce Job 4 (date × hour × zone demand grid), averaged over all days</p>
+        <div class="table-scroll" id="heatmap-driver"></div>
+      </article>
+
+      <article class="card">
+        <h2>Earning window</h2>
+        <p class="chart-note">Average fare earned per minute of trip, by hour</p>
+        <div class="chart-box"><canvas id="chart-driver-earning"></canvas></div>
+      </article>
+      <article class="card">
+        <h2>Hourly demand projection</h2>
+        <p class="chart-note" id="projection-note">Average trips per day for your vehicle — Source: MapReduce Job 1</p>
+        <div class="chart-box"><canvas id="chart-driver-projection"></canvas></div>
+      </article>
+      <article class="card">
+        <h2>Trip duration vs fare yield (₹ per minute)</h2>
+        <p class="chart-note">Longer cab trips aren't always better per minute</p>
+        <div class="table-scroll" id="table-yield"></div>
+      </article>
+      <article class="card">
+        <h2>Best earning corridors</h2>
+        <p class="chart-note" id="corridor-note"></p>
+        <div class="table-scroll" id="table-corridors"></div>
+      </article>
+    </div>
+  </section>
+
+  <!-- =============================================================== ADMIN -->
+  <section id="view-admin" class="view" role="tabpanel" aria-label="Admin view">
+    <p class="view-intro" id="admin-intro"></p>
+
+    <section class="kpi-grid" id="kpi-admin" aria-label="System metrics"></section>
+
+    <div class="grid">
+      <article class="card">
+        <h2>Mode share</h2>
+        <p class="chart-note">Share of all trips by vehicle type</p>
+        <div class="chart-box"><canvas id="chart-admin-modeshare"></canvas></div>
+      </article>
+      <article class="card">
+        <h2>Revenue by vehicle</h2>
+        <p class="chart-note">Total fares collected (₹ lakh)</p>
+        <div class="chart-box"><canvas id="chart-admin-revenue"></canvas></div>
+      </article>
+      <article class="card wide">
+        <h2>Demand by hour and vehicle type</h2>
+        <p class="chart-note">Source: MapReduce Job 1 — (hour, vehicle_type) → trip count</p>
+        <div class="chart-box tall"><canvas id="chart-admin-job1"></canvas></div>
+      </article>
+      <article class="card wide">
+        <h2>Average fare by pickup zone and vehicle</h2>
+        <p class="chart-note">Source: MapReduce Job 2 — (pickup_zone, vehicle_type) → avg duration &amp; avg fare</p>
+        <div class="controls-row" style="margin-bottom:8px">
+          <label class="field">Metric
+            <select id="job2-metric">
+              <option value="avg_fare_inr">Average fare (₹)</option>
+              <option value="avg_duration_min">Average duration (min)</option>
+            </select>
+          </label>
+        </div>
+        <div class="chart-box tall"><canvas id="chart-admin-job2"></canvas></div>
+      </article>
+      <article class="card">
+        <h2>Peak-hour congestion</h2>
+        <p class="chart-note">Average traffic factor (1.0 = free flow) by hour</p>
+        <div class="chart-box"><canvas id="chart-admin-congestion"></canvas></div>
+      </article>
+      <article class="card">
+        <h2>Average speed by hour</h2>
+        <p class="chart-note">km/h, per vehicle type</p>
+        <div class="chart-box"><canvas id="chart-admin-speed"></canvas></div>
+      </article>
+      <article class="card wide">
+        <h2>25 slowest peak-hour corridors</h2>
+        <p class="chart-note">Source: MapReduce Job 3 — peak trips only, (pickup_zone, dropoff_zone) → avg speed &amp; delay. Critical &lt; 13.75 km/h, Severe &lt; 15 km/h</p>
+        <div class="chart-box xtall"><canvas id="chart-admin-job3"></canvas></div>
+      </article>
+      <article class="card">
+        <h2>Rain impact</h2>
+        <p class="chart-note">Minutes per km, dry vs rainy days</p>
+        <div class="chart-box"><canvas id="chart-admin-rain"></canvas></div>
+      </article>
+      <article class="card">
+        <h2>Revenue by pickup zone</h2>
+        <p class="chart-note">Total fares (₹ lakh) — Source: MapReduce Job 2</p>
+        <div class="chart-box"><canvas id="chart-admin-zone-revenue"></canvas></div>
+      </article>
+      <article class="card wide">
+        <h2>Trip volume — day × hour</h2>
+        <div class="table-scroll" id="heatmap-admin"></div>
+      </article>
+    </div>
+
+    <h2 class="section-title">MapReduce job outputs</h2>
+    <p class="view-intro">Direct output of the four local MapReduce jobs (mapper → shuffle/sort → reducer) in
+      <code>pipeline/mapreduce/</code>. Each mapper/reducer pair follows the Hadoop Streaming contract and runs
+      unchanged under <code>hadoop jar hadoop-streaming.jar</code>.</p>
+    <div class="grid">
+      <article class="card">
+        <h2>Job 1 — Modal demand by hour</h2>
+        <div class="table-scroll" id="mr-job1"></div>
+      </article>
+      <article class="card">
+        <h2>Job 2 — Avg duration &amp; fare by zone</h2>
+        <div class="table-scroll" id="mr-job2"></div>
+      </article>
+      <article class="card wide">
+        <h2>Job 3 — Top congestion corridors (peak hours)</h2>
+        <div class="table-scroll" id="mr-job3"></div>
+      </article>
+      <article class="card">
+        <h2>Job 4 — Demand dataset (busiest cells)</h2>
+        <p class="chart-note" id="mr-job4-note"></p>
+        <div class="table-scroll" id="mr-job4"></div>
+      </article>
+      <article class="card">
+        <h2>Machine learning models</h2>
+        <div id="ml-metrics"></div>
+      </article>
+    </div>
+  </section>
+</main>
+
+<footer class="app-footer" id="footer">
+  CA3 Activity 2 — Bengaluru Multi-Modal Urban Mobility Analytics · Data generation → cleaning → MapReduce → ML → dashboard
+</footer>
+
+<script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+</body>
+</html>

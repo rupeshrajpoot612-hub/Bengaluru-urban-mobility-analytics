@@ -1,0 +1,91 @@
+pickup_zone,dropoff_zone,peak_trips,avg_speed_kmph,avg_duration_min,avg_delay_min,delay_share,bottleneck_status
+Electronic City,HSR Layout,2088,13.09,45.56,23.30,0.511,CRITICAL
+Electronic City,Hebbal,198,14.59,121.17,69.15,0.571,SEVERE
+Electronic City,Indiranagar,632,14.19,84.00,45.15,0.538,SEVERE
+Electronic City,Jayanagar,978,14.12,64.12,32.78,0.511,SEVERE
+Electronic City,Kempegowda Airport (BLR),8,18.71,165.41,78.39,0.474,MODERATE
+Electronic City,Koramangala,1290,13.51,63.29,33.36,0.527,CRITICAL
+Electronic City,MG Road,534,14.16,89.12,48.73,0.547,SEVERE
+Electronic City,Majestic (KSR Station),323,14.50,96.25,52.65,0.547,SEVERE
+Electronic City,Whitefield,364,14.26,94.78,52.22,0.551,SEVERE
+HSR Layout,Electronic City,975,14.29,41.92,19.65,0.469,SEVERE
+HSR Layout,Hebbal,227,14.55,81.55,42.93,0.526,SEVERE
+HSR Layout,Indiranagar,927,14.15,42.01,19.92,0.474,SEVERE
+HSR Layout,Jayanagar,868,14.10,33.72,15.40,0.457,SEVERE
+HSR Layout,Kempegowda Airport (BLR),9,18.19,140.08,68.09,0.486,MODERATE
+HSR Layout,Koramangala,1937,13.22,21.82,9.87,0.452,CRITICAL
+HSR Layout,MG Road,751,14.40,46.66,22.10,0.474,SEVERE
+HSR Layout,Majestic (KSR Station),461,14.24,61.43,30.96,0.504,SEVERE
+HSR Layout,Whitefield,594,14.75,70.00,35.13,0.502,SEVERE
+Hebbal,Electronic City,167,15.87,112.01,59.98,0.535,MODERATE
+Hebbal,HSR Layout,305,14.41,81.42,43.07,0.529,SEVERE
+Hebbal,Indiranagar,1047,14.31,44.58,20.92,0.469,SEVERE
+Hebbal,Jayanagar,396,14.69,66.91,33.63,0.503,SEVERE
+Hebbal,Kempegowda Airport (BLR),78,16.92,101.77,51.59,0.507,MODERATE
+Hebbal,Koramangala,752,14.35,64.34,32.43,0.504,SEVERE
+Hebbal,MG Road,1144,14.18,37.89,17.49,0.462,SEVERE
+Hebbal,Majestic (KSR Station),895,13.88,41.10,19.64,0.478,SEVERE
+Hebbal,Whitefield,320,15.11,95.49,50.82,0.532,MODERATE
+Indiranagar,Electronic City,345,15.17,78.52,39.78,0.507,MODERATE
+Indiranagar,HSR Layout,1177,13.72,43.44,21.15,0.487,CRITICAL
+Indiranagar,Hebbal,903,13.70,46.38,22.89,0.494,CRITICAL
+Indiranagar,Jayanagar,955,14.20,43.74,20.73,0.474,SEVERE
+Indiranagar,Kempegowda Airport (BLR),46,17.53,117.43,58.79,0.501,MODERATE
+Indiranagar,Koramangala,1803,13.54,30.11,13.95,0.463,CRITICAL
+Indiranagar,MG Road,1790,13.43,23.03,10.27,0.446,CRITICAL
+Indiranagar,Majestic (KSR Station),933,14.21,42.22,19.87,0.471,SEVERE
+Indiranagar,Whitefield,630,14.44,65.36,33.03,0.505,SEVERE
+Jayanagar,Electronic City,465,14.58,62.79,31.23,0.497,SEVERE
+Jayanagar,HSR Layout,794,13.87,34.58,16.06,0.464,SEVERE
+Jayanagar,Hebbal,253,14.50,67.83,34.38,0.507,SEVERE
+Jayanagar,Indiranagar,717,14.70,42.32,19.40,0.458,SEVERE
+Jayanagar,Kempegowda Airport (BLR),12,20.72,125.52,51.13,0.407,MODERATE
+Jayanagar,Koramangala,1491,13.51,20.74,9.03,0.435,CRITICAL
+Jayanagar,MG Road,892,14.26,32.25,14.42,0.447,SEVERE
+Jayanagar,Majestic (KSR Station),682,14.08,35.35,16.23,0.459,SEVERE
+Jayanagar,Whitefield,235,14.81,94.53,51.06,0.540,SEVERE
+Kempegowda Airport (BLR),Electronic City,20,20.66,150.30,62.99,0.419,MODERATE
+Kempegowda Airport (BLR),HSR Layout,97,18.18,138.64,67.40,0.486,MODERATE
+Kempegowda Airport (BLR),Hebbal,510,16.21,106.01,55.86,0.527,MODERATE
+Kempegowda Airport (BLR),Indiranagar,386,17.68,113.77,56.30,0.495,MODERATE
+Kempegowda Airport (BLR),Jayanagar,84,18.21,143.14,69.25,0.484,MODERATE
+Kempegowda Airport (BLR),Koramangala,158,17.92,133.79,65.93,0.493,MODERATE
+Kempegowda Airport (BLR),MG Road,222,17.42,122.52,61.77,0.504,MODERATE
+Kempegowda Airport (BLR),Majestic (KSR Station),148,17.59,128.16,64.00,0.499,MODERATE
+Kempegowda Airport (BLR),Whitefield,335,17.07,119.42,61.21,0.513,MODERATE
+Koramangala,Electronic City,552,14.60,58.28,28.49,0.489,SEVERE
+Koramangala,HSR Layout,2012,13.08,22.00,10.00,0.455,CRITICAL
+Koramangala,Hebbal,510,14.06,65.41,33.63,0.514,SEVERE
+Koramangala,Indiranagar,1585,13.70,29.74,13.63,0.458,CRITICAL
+Koramangala,Jayanagar,1765,13.42,20.88,9.16,0.439,CRITICAL
+Koramangala,Kempegowda Airport (BLR),20,17.95,134.92,66.38,0.492,MODERATE
+Koramangala,MG Road,1525,13.51,29.15,13.49,0.463,CRITICAL
+Koramangala,Majestic (KSR Station),939,13.51,43.67,21.67,0.496,CRITICAL
+Koramangala,Whitefield,483,14.49,78.04,40.68,0.521,SEVERE
+MG Road,Electronic City,254,15.13,82.89,42.67,0.515,MODERATE
+MG Road,HSR Layout,917,13.93,48.40,23.80,0.492,SEVERE
+MG Road,Hebbal,865,13.68,39.15,18.87,0.482,CRITICAL
+MG Road,Indiranagar,1581,13.73,22.63,9.85,0.435,CRITICAL
+MG Road,Jayanagar,1065,13.98,32.84,14.97,0.456,SEVERE
+MG Road,Kempegowda Airport (BLR),29,17.64,123.02,61.35,0.499,MODERATE
+MG Road,Koramangala,1582,13.51,29.27,13.54,0.463,CRITICAL
+MG Road,Majestic (KSR Station),1254,13.27,21.85,9.75,0.446,CRITICAL
+MG Road,Whitefield,282,14.78,84.66,44.35,0.524,SEVERE
+Majestic (KSR Station),Electronic City,208,14.50,97.36,53.28,0.547,SEVERE
+Majestic (KSR Station),HSR Layout,543,14.14,61.96,31.34,0.506,SEVERE
+Majestic (KSR Station),Hebbal,806,13.76,41.15,19.93,0.484,SEVERE
+Majestic (KSR Station),Indiranagar,920,14.09,42.58,20.27,0.476,SEVERE
+Majestic (KSR Station),Jayanagar,955,13.94,35.68,16.63,0.466,SEVERE
+Majestic (KSR Station),Kempegowda Airport (BLR),17,17.57,128.91,64.05,0.497,MODERATE
+Majestic (KSR Station),Koramangala,1074,13.86,42.28,20.42,0.483,SEVERE
+Majestic (KSR Station),MG Road,1414,13.17,22.03,9.97,0.453,CRITICAL
+Majestic (KSR Station),Whitefield,196,15.46,99.48,52.86,0.531,MODERATE
+Whitefield,Electronic City,486,14.17,95.30,52.87,0.555,SEVERE
+Whitefield,HSR Layout,1509,13.43,76.19,41.66,0.547,CRITICAL
+Whitefield,Hebbal,550,13.88,103.56,59.07,0.570,SEVERE
+Whitefield,Indiranagar,1426,13.68,69.11,36.67,0.530,CRITICAL
+Whitefield,Jayanagar,625,14.38,98.07,54.17,0.552,SEVERE
+Whitefield,Kempegowda Airport (BLR),96,16.73,120.01,62.61,0.522,MODERATE
+Whitefield,Koramangala,1222,13.69,81.73,44.69,0.547,CRITICAL
+Whitefield,MG Road,766,13.88,90.01,49.86,0.554,SEVERE
+Whitefield,Majestic (KSR Station),378,13.90,110.93,64.04,0.577,SEVERE
